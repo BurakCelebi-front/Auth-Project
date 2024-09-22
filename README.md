@@ -19,3 +19,17 @@ Frontend: React.js, CSS3, Tailwind CSS
 Backend: Node.js, Express.js, MongoDB
 Authentication: JWT, Nodemailer
 This project serves as an ideal foundation for building more complex authentication systems or integrating into larger full-stack applications.
+
+
+Setup .env file
+
+
+MONGO_URI=your_mongodb_URI
+PORT=5174
+JWT_SECRET=your_secret_key
+NODE_ENV=development
+MAILTRAP_TOKEN=your_mailtrap_token
+MAILTRAP_ENDPOINT=http://send.api.mailtrap.io/
+CLIENT_URL=http://localhost:5173
+
+
