@@ -9,6 +9,7 @@ Welcome Emails: Sends a personalized welcome email to users upon successful regi
 This application demonstrates secure user authentication, leveraging industry-standard practices and technologies, such as JSON Web Tokens (JWT) for secure token-based authentication and Nodemailer for sending emails.
 
 Key Features:
+
 User registration and login with email and password.
 Secure email verification flow.
 Password recovery via email.
@@ -22,7 +23,6 @@ This project serves as an ideal foundation for building more complex authenticat
 
 
 Setup .env file
-
 
 MONGO_URI=your_mongodb_URI
 PORT=5174
