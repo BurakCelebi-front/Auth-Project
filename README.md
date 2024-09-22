@@ -1,6 +1,6 @@
 # Auth-Project
 
-Advanced MERN Authentication System
+# Advanced MERN Authentication System
 
 This project is a robust authentication system built using the MERN stack (MongoDB, Express, React, and Node.js). It includes advanced features such as:
 
@@ -13,7 +13,7 @@ This application demonstrates secure user authentication, leveraging industry-st
 
 
 
-Key Features:
+# Key Features:
 
 User registration and login with email and password.
 
@@ -37,11 +37,9 @@ This project serves as an ideal foundation for building more complex authenticat
 
 
 
+# Setup .env file
 
-
-Setup .env file
-
-MONGO_URI=your_mongodb_URI
+MONGO_URI=your_mongodb_URI 
 
 PORT=5174
 
