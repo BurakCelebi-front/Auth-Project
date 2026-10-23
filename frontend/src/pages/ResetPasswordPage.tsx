@@ -1,5 +1,5 @@
 import { Lock } from "lucide-react";
-import { useEffect, useState, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -9,6 +9,7 @@ import Input from "../components/Input";
 import PasswordStrengthMeter from "../components/PasswordStrengthMeter";
 import PrimaryButton from "../components/PrimaryButton";
 import { PASSWORD_MAX_LENGTH, isPasswordValid } from "../lib/password";
+import { useClearAuthErrors } from "../hooks/useClearAuthErrors";
 import { useAuthStore } from "../store/authStore";
 
 const REDIRECT_DELAY_MS = 2000;
@@ -17,14 +18,12 @@ const ResetPasswordPage = () => {
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [mismatch, setMismatch] = useState(false);
-	const { resetPassword, error, isLoading, clearError } = useAuthStore();
+	const { resetPassword, error, isLoading } = useAuthStore();
 
 	const { token = "" } = useParams<{ token: string }>();
 	const navigate = useNavigate();
 
-	useEffect(() => {
-		clearError();
-	}, [clearError]);
+	useClearAuthErrors();
 
 	const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -39,7 +38,7 @@ const ResetPasswordPage = () => {
 			await resetPassword(token, password);
 			toast.success("Password reset successfully, redirecting to login page...");
 			setTimeout(() => {
-				navigate("/login");
+				void navigate("/login");
 			}, REDIRECT_DELAY_MS);
 		} catch {
 			// error message is shown from the store

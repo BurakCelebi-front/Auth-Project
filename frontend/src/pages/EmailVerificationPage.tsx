@@ -6,6 +6,7 @@ import AuthCard from "../components/AuthCard";
 import FormError from "../components/FormError";
 import PrimaryButton from "../components/PrimaryButton";
 import { getErrorMessage } from "../lib/api";
+import { useClearAuthErrors } from "../hooks/useClearAuthErrors";
 import { useAuthStore } from "../store/authStore";
 
 const CODE_LENGTH = 6;
@@ -19,11 +20,9 @@ const EmailVerificationPage = () => {
 	const lastSubmitted = useRef<string | null>(null);
 	const navigate = useNavigate();
 
-	const { user, error, isLoading, verifyEmail, resendVerification, clearError } = useAuthStore();
+	const { user, error, isLoading, verifyEmail, resendVerification } = useAuthStore();
 
-	useEffect(() => {
-		clearError();
-	}, [clearError]);
+	useClearAuthErrors();
 
 	useEffect(() => {
 		if (cooldown <= 0) return;
@@ -45,7 +44,7 @@ const EmailVerificationPage = () => {
 			try {
 				await verifyEmail(verificationCode);
 				toast.success("Email verified successfully");
-				navigate("/");
+				void navigate("/");
 			} catch {
 				setCode(emptyCode());
 				focusInput(0);

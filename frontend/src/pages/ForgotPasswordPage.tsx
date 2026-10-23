@@ -1,23 +1,22 @@
 import { motion } from "framer-motion";
 import { ArrowLeft, Mail } from "lucide-react";
-import { useEffect, useState, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
 
 import AuthCard from "../components/AuthCard";
 import FormError from "../components/FormError";
 import Input from "../components/Input";
 import PrimaryButton from "../components/PrimaryButton";
+import { useClearAuthErrors } from "../hooks/useClearAuthErrors";
 import { useAuthStore } from "../store/authStore";
 
 const ForgotPasswordPage = () => {
 	const [email, setEmail] = useState("");
 	const [isSubmitted, setIsSubmitted] = useState(false);
 
-	const { isLoading, error, forgotPassword, clearError } = useAuthStore();
+	const { isLoading, error, forgotPassword } = useAuthStore();
 
-	useEffect(() => {
-		clearError();
-	}, [clearError]);
+	useClearAuthErrors();
 
 	const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();

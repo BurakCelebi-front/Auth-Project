@@ -1,22 +1,21 @@
 import { Lock, Mail } from "lucide-react";
-import { useEffect, useState, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
 
 import AuthCard from "../components/AuthCard";
 import FormError from "../components/FormError";
 import Input from "../components/Input";
 import PrimaryButton from "../components/PrimaryButton";
+import { useClearAuthErrors } from "../hooks/useClearAuthErrors";
 import { useAuthStore } from "../store/authStore";
 
 const LoginPage = () => {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 
-	const { login, isLoading, error, clearError } = useAuthStore();
+	const { login, isLoading, error } = useAuthStore();
 
-	useEffect(() => {
-		clearError();
-	}, [clearError]);
+	useClearAuthErrors();
 
 	const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();

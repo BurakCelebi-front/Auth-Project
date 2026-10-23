@@ -68,7 +68,7 @@ All responses are JSON: `{ success, message?, user? }`. Validation errors return
 
 ## 🚀 Getting Started
 
-Requires **Node.js 20.11+** and a MongoDB database (local or Atlas).
+Requires **Node.js 22.12+** (see `.nvmrc`) and a MongoDB database (local or Atlas).
 
 ```bash
 git clone https://github.com/BurakCelebi-front/Auth-Project.git

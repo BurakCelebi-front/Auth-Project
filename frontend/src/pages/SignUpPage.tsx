@@ -1,5 +1,5 @@
 import { Lock, Mail, User } from "lucide-react";
-import { useEffect, useState, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -9,6 +9,7 @@ import Input from "../components/Input";
 import PasswordStrengthMeter from "../components/PasswordStrengthMeter";
 import PrimaryButton from "../components/PrimaryButton";
 import { PASSWORD_MAX_LENGTH, isPasswordValid } from "../lib/password";
+import { useClearAuthErrors } from "../hooks/useClearAuthErrors";
 import { useAuthStore } from "../store/authStore";
 
 const SignUpPage = () => {
@@ -17,11 +18,9 @@ const SignUpPage = () => {
 	const [password, setPassword] = useState("");
 	const navigate = useNavigate();
 
-	const { signup, error, isLoading, clearError } = useAuthStore();
+	const { signup, error, isLoading } = useAuthStore();
 
-	useEffect(() => {
-		clearError();
-	}, [clearError]);
+	useClearAuthErrors();
 
 	const handleSignUp = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -29,7 +28,7 @@ const SignUpPage = () => {
 			await signup(email, password, name);
 			const { message } = useAuthStore.getState();
 			if (message) toast.success(message);
-			navigate("/verify-email");
+			void navigate("/verify-email");
 		} catch {
 			// error message is shown from the store
 		}
