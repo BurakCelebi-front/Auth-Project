@@ -14,6 +14,24 @@ A full-stack authentication system written end-to-end in **TypeScript** (MongoDB
 |---|---|
 | ![Login page](docs/screenshots/login.jpg) | ![Sign up page with live password strength meter](docs/screenshots/signup.jpg) |
 
+## 🧭 Background
+
+This project started from the **[TUTORIAL NAME]** tutorial by [AUTHOR] ([link](TUTORIAL_LINK)), which uses plain JavaScript, Mailtrap and a minimal Express setup. I then took it well beyond the original:
+
+- Rewrote the backend and frontend in **strict TypeScript**
+- Fixed security issues in the original flow: the verification code was sent back to the browser in the signup response, codes weren't tied to the logged-in user, and codes/reset tokens were stored in plain text
+- Added **zod** validation for every request and for environment variables, **rate limiting**, **helmet** security headers, a 5-attempt lockout and a resend-code flow
+- Replaced Mailtrap with **Brevo** (HTTP API) so real emails reach any user, and made email failures non-blocking
+- Added **28 unit and integration tests** (Vitest + Supertest against a real MongoDB) and a **GitHub Actions** CI pipeline
+- Deployed to **Render** with **MongoDB Atlas**
+
+## 💡 What I learned
+
+- Designing auth flows where the server never trusts the client: hashed one-time codes, allow-listed API responses, httpOnly cookies
+- Typing an Express + Mongoose backend end-to-end and sharing request/response contracts with the React client
+- Testing against a real database in CI instead of mocking everything
+- Free-tier deployment trade-offs (cold starts, blocked SMTP ports, IP allow-lists)
+
 ## 📌 Features
 
 - Sign up and log in with email + password
