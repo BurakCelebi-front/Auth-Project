@@ -4,9 +4,15 @@
 
 A full-stack authentication system written end-to-end in **TypeScript** (MongoDB, Express, React, Node.js): sign-up with email verification, login, protected routes and email-based password reset — with input validation, rate limiting and an integration test suite.
 
-**🔗 Live demo:** _coming soon_ <!-- replace with the Render URL after deploy -->
+**🔗 Live demo:** [auth-project-tdty.onrender.com](https://auth-project-tdty.onrender.com)
 
-> The demo runs on a free Render instance — the first request after inactivity can take ~30–50 seconds while the server wakes up.
+> The demo runs on a free Render instance — the first request after inactivity can take ~30–50 seconds while the server wakes up. Verification codes and reset links are sent to the email you sign up with (check your spam folder).
+
+## 📸 Screenshots
+
+| Login | Sign up |
+|---|---|
+| ![Login page](docs/screenshots/login.jpg) | ![Sign up page with live password strength meter](docs/screenshots/signup.jpg) |
 
 ## 📌 Features
 
