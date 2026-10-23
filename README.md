@@ -16,7 +16,7 @@ A full-stack authentication system written end-to-end in **TypeScript** (MongoDB
 
 ## 🧭 Background
 
-This project started from the **[TUTORIAL NAME]** tutorial by [AUTHOR] ([link](TUTORIAL_LINK)), which uses plain JavaScript, Mailtrap and a minimal Express setup. I then took it well beyond the original:
+This project started from the MERN Auth-Project tutorial by Javascript Mastery, which uses plain JavaScript, Mailtrap and a minimal Express setup. I then took it well beyond the original:
 
 - Rewrote the backend and frontend in **strict TypeScript**
 - Fixed security issues in the original flow: the verification code was sent back to the browser in the signup response, codes weren't tied to the logged-in user, and codes/reset tokens were stored in plain text
