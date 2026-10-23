@@ -37,6 +37,21 @@ A full-stack authentication system written end-to-end in **TypeScript** (MongoDB
 | Headers | `helmet` (CSP, HSTS, no `x-powered-by`), 10 kB JSON body limit |
 | Config | Environment variables validated at startup — the server refuses to start with a missing or weak `JWT_SECRET` |
 
+### 📝 Design note: why login has no two-factor authentication (2FA)
+
+Email ownership is verified once, at sign-up. Logging in afterwards only requires the password — a second email code on every login was considered and **intentionally left out** for this demo:
+
+- **Friction:** a code on every login makes the demo tedious to try; reviewers would need to open their inbox each time.
+- **Email dependency:** every login would send an email. The free Brevo plan allows 300 emails/day, and if delivery is slow or fails, nobody could log in.
+- **Weaker than it looks:** email codes are only as safe as the user's inbox; an authenticator app (TOTP) is the stronger second factor.
+
+**How it would be added:** the building blocks already exist (hashed one-time codes, attempt lockout, email templates, the 6-digit code input):
+1. `POST /login` issues a short-lived *login-pending* token instead of a session.
+2. A new `POST /login/verify` checks the code and only then issues the real session cookie.
+3. `requireAuth` accepts session tokens only, so a pending login can never reach protected routes.
+
+The recommended product shape is **opt-in 2FA** (a toggle on the dashboard) with "remember this device for 30 days", or **TOTP** via an authenticator app instead of email.
+
 ## 🛠 Tech Stack
 
 | Layer | Technologies |
