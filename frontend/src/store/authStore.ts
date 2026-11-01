@@ -16,6 +16,7 @@ interface AuthActions {
 	signup: (email: string, password: string, name: string) => Promise<void>;
 	login: (email: string, password: string) => Promise<void>;
 	logout: () => Promise<void>;
+	deleteAccount: (password: string) => Promise<void>;
 	verifyEmail: (code: string) => Promise<void>;
 	resendVerification: () => Promise<string>;
 	checkAuth: () => Promise<void>;
@@ -63,6 +64,11 @@ export const useAuthStore = create<AuthStore>()((set) => {
 
 		logout: async () => {
 			await run(() => authApi.logout(), "Error logging out");
+			set({ user: null, isAuthenticated: false });
+		},
+
+		deleteAccount: async (password) => {
+			await run(() => authApi.deleteAccount(password), "Error deleting account");
 			set({ user: null, isAuthenticated: false });
 		},
 

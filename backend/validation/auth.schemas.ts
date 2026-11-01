@@ -37,6 +37,11 @@ export const forgotPasswordSchema = z.object({ email });
 
 export const resetPasswordSchema = z.object({ password: newPassword });
 
+// Deleting an account is irreversible, so the current password is asked again.
+export const deleteAccountSchema = z.object({
+	password: z.string({ error: "Password is required" }).min(1, "Password is required").max(72),
+});
+
 export const resetTokenParamsSchema = z.object({
 	token: z.string().regex(/^[a-f0-9]{64}$/, "Invalid or expired reset link"),
 });
@@ -46,4 +51,5 @@ export type LoginInput = z.infer<typeof loginSchema>;
 export type VerifyEmailInput = z.infer<typeof verifyEmailSchema>;
 export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
 export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
+export type DeleteAccountInput = z.infer<typeof deleteAccountSchema>;
 export type ResetTokenParams = z.infer<typeof resetTokenParamsSchema>;

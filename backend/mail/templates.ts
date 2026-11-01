@@ -88,3 +88,14 @@ export const passwordResetSuccessEmail = (): EmailContent => ({
 	),
 	text: "Your password has been reset successfully. If this wasn't you, contact support immediately.",
 });
+
+export const accountDeletedEmail = (name: string): EmailContent => ({
+	subject: "Your account has been deleted",
+	html: layout(
+		"Account Deleted",
+		`<p>Hello ${escapeHtml(name)},</p>
+    <p>Your account and all associated data have been permanently deleted.</p>
+    <p>If you did not request this, please contact our support team immediately.</p>`,
+	),
+	text: `Hello ${name}, your account and all associated data have been permanently deleted. If this wasn't you, contact support immediately.`,
+});

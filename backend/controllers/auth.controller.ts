@@ -3,7 +3,7 @@ import type { RequestHandler } from "express";
 
 import { clientUrl } from "../config/env.js";
 import { trySendEmail } from "../mail/brevo.js";
-import { passwordResetEmail, passwordResetSuccessEmail, verificationEmail, welcomeEmail } from "../mail/templates.js";
+import { accountDeletedEmail, passwordResetEmail, passwordResetSuccessEmail, verificationEmail, welcomeEmail } from "../mail/templates.js";
 import { User, toPublicUser } from "../models/user.model.js";
 import type { ApiResponse, UserResponse } from "../types/api.js";
 import { AppError } from "../utils/AppError.js";
@@ -18,6 +18,7 @@ import {
 	hashToken,
 } from "../utils/tokens.js";
 import type {
+	DeleteAccountInput,
 	ForgotPasswordInput,
 	LoginInput,
 	ResetPasswordInput,
@@ -184,4 +185,26 @@ export const checkAuth = asyncHandler<Params, UserResponse>(async (req, res) => 
 	}
 
 	res.json({ success: true, user: toPublicUser(user) });
+});
+
+export const deleteAccount = asyncHandler<Params, ApiResponse, DeleteAccountInput>(async (req, res) => {
+	const user = await User.findById(requireUserId(req.userId)).select("+password");
+
+	if (!user) {
+		clearAuthCookie(res);
+		throw new AppError(404, "User not found");
+	}
+
+	// Re-check the password so a stolen or left-open session cannot delete the account.
+	if (!(await user.comparePassword(req.body.password))) {
+		throw new AppError(401, "Incorrect password");
+	}
+
+	const { email, name } = user;
+	await user.deleteOne();
+	clearAuthCookie(res);
+
+	void trySendEmail({ to: email, ...accountDeletedEmail(name) });
+
+	res.json({ success: true, message: "Your account has been deleted" });
 });

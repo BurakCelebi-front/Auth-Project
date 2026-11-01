@@ -2,6 +2,7 @@ import { Router } from "express";
 
 import {
 	checkAuth,
+	deleteAccount,
 	forgotPassword,
 	login,
 	logout,
@@ -14,6 +15,7 @@ import { authLimiter, emailLimiter } from "../middleware/rateLimit.js";
 import { requireAuth } from "../middleware/requireAuth.js";
 import { validate } from "../middleware/validate.js";
 import {
+	deleteAccountSchema,
 	forgotPasswordSchema,
 	loginSchema,
 	resetPasswordSchema,
@@ -41,5 +43,7 @@ router.post(
 	validate(resetPasswordSchema),
 	resetPassword,
 );
+
+router.delete("/account", authLimiter, requireAuth, validate(deleteAccountSchema), deleteAccount);
 
 export default router;

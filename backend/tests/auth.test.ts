@@ -213,3 +213,33 @@ describe("password reset", () => {
 		await request(app).post("/api/auth/reset-password/abc").send({ password: "secret123" }).expect(400);
 	});
 });
+
+
+describe("delete account", () => {
+	it("requires a session", async () => {
+		await request(app).delete("/api/auth/account").send({ password: PASSWORD }).expect(401);
+	});
+
+	it("rejects a wrong password and keeps the account", async () => {
+		const input = newUser();
+		const agent = request.agent(app);
+		await agent.post("/api/auth/signup").send(input).expect(201);
+
+		await agent.delete("/api/auth/account").send({ password: "wrong-password1" }).expect(401);
+		expect(await User.exists({ email: input.email })).toBeTruthy();
+	});
+
+	it("deletes the user, clears the session and frees the email", async () => {
+		const input = newUser();
+		const agent = request.agent(app);
+		await agent.post("/api/auth/signup").send(input).expect(201);
+
+		await agent.delete("/api/auth/account").send({ password: PASSWORD }).expect(200);
+
+		expect(await User.exists({ email: input.email })).toBeNull();
+		expect(lastEmailTo(input.email).subject).toMatch(/deleted/i);
+		await agent.get("/api/auth/check-auth").expect(401);
+		await request(app).post("/api/auth/login").send({ email: input.email, password: PASSWORD }).expect(401);
+		await request(app).post("/api/auth/signup").send(input).expect(201);
+	});
+});

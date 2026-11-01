@@ -1,13 +1,20 @@
 import { motion } from "framer-motion";
+import { Lock } from "lucide-react";
+import { useState, type FormEvent } from "react";
 import toast from "react-hot-toast";
 
+import FormError from "../components/FormError";
+import Input from "../components/Input";
 import PrimaryButton from "../components/PrimaryButton";
+import { useClearAuthErrors } from "../hooks/useClearAuthErrors";
 import { useAuthStore } from "../store/authStore";
 import { formatDate, formatDay } from "../utils/date";
 
 const DashboardPage = () => {
-	const { user, logout, isLoading } = useAuthStore();
-
+	const { user, logout, deleteAccount, isLoading, error, clearError } = useAuthStore();
+	const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+	const [password, setPassword] = useState("");
+	useClearAuthErrors();
 	// ProtectedRoute guarantees a user; this guard keeps the types honest.
 	if (!user) return null;
 
@@ -17,6 +24,22 @@ const DashboardPage = () => {
 		} catch {
 			toast.error("Error logging out");
 		}
+	};
+
+	const handleDeleteAccount = async (e: FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		try {
+			await deleteAccount(password);
+			toast.success("Your account has been deleted");
+		} catch {
+			// The error message is shown in the form via the store.
+		}
+	};
+
+	const closeDelete = () => {
+		setIsDeleteOpen(false);
+		setPassword("");
+		clearError();
 	};
 
 	return (
@@ -70,6 +93,55 @@ const DashboardPage = () => {
 					Logout
 				</PrimaryButton>
 			</motion.div>
+						<motion.section
+				initial={{ opacity: 0, y: 20 }}
+				animate={{ opacity: 1, y: 0 }}
+				transition={{ delay: 0.8 }}
+				className='mt-6 p-4 rounded-lg border border-red-900 bg-red-950 bg-opacity-30'
+			>
+				<h3 className='text-xl font-semibold text-red-400 mb-2'>Danger Zone</h3>
+				{isDeleteOpen ? (
+					<form onSubmit={(e) => void handleDeleteAccount(e)}>
+						<p className='text-gray-300 text-sm mb-4'>
+							This permanently deletes your account and all its data. Enter your password to confirm.
+						</p>
+						<Input
+							icon={Lock}
+							type='password'
+							placeholder='Current password'
+							autoComplete='current-password'
+							value={password}
+							onChange={(e) => { setPassword(e.target.value); }}
+							required
+						/>
+						<FormError message={error} />
+						<div className='flex gap-3'>
+							<button
+								type='button'
+								onClick={closeDelete}
+								className='flex-1 py-3 px-4 rounded-lg border border-gray-600 text-gray-300 font-bold hover:bg-gray-800 transition duration-200'
+							>
+								Cancel
+							</button>
+							<PrimaryButton
+								isLoading={isLoading}
+								disabled={isLoading || password.length === 0}
+								className='flex-1 from-red-500 to-red-700 hover:from-red-600 hover:to-red-800 focus:ring-red-500'
+							>
+								Delete
+							</PrimaryButton>
+						</div>
+					</form>
+				) : (
+					<button
+						type='button'
+						onClick={() => { setIsDeleteOpen(true); }}
+						className='w-full py-3 px-4 rounded-lg border border-red-700 text-red-400 font-bold hover:bg-red-900 hover:bg-opacity-30 transition duration-200'
+					>
+						Delete account
+					</button>
+				)}
+			</motion.section>
 		</motion.div>
 	);
 };

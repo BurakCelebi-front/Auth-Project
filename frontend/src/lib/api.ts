@@ -25,6 +25,8 @@ export const authApi = {
 	logout: () => http.post<ApiResponse>("/logout").then((r) => r.data),
 	verifyEmail: (code: string) => http.post<UserResponse>("/verify-email", { code }).then((r) => r.data),
 	resendVerification: () => http.post<ApiResponse>("/resend-verification").then((r) => r.data),
+	deleteAccount: (password: string) =>
+		http.delete<ApiResponse>("/account", { data: { password } }).then((r) => r.data),
 	checkAuth: () => http.get<UserResponse>("/check-auth").then((r) => r.data),
 	forgotPassword: (email: string) => http.post<ApiResponse>("/forgot-password", { email }).then((r) => r.data),
 	resetPassword: (token: string, password: string) =>
