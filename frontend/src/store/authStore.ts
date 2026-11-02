@@ -86,7 +86,7 @@ export const useAuthStore = create<AuthStore>()((set) => {
 			set({ isCheckingAuth: true, error: null });
 			try {
 				const { user } = await authApi.checkAuth();
-				set({ user, isAuthenticated: true, isCheckingAuth: false });
+				set({ user, isAuthenticated: user !== null, isCheckingAuth: false });
 			} catch {
 				set({ user: null, isAuthenticated: false, isCheckingAuth: false });
 			}

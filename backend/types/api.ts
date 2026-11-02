@@ -9,6 +9,11 @@ export interface UserResponse extends ApiResponse {
 	user: PublicUser;
 }
 
+/** `user` is `null` for visitors without a valid session. */
+export interface SessionResponse extends ApiResponse {
+	user: PublicUser | null;
+}
+
 export interface ErrorResponse extends ApiResponse {
 	success: false;
 	message: string;

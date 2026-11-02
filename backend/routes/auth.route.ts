@@ -26,7 +26,7 @@ import {
 
 const router = Router();
 
-router.get("/check-auth", requireAuth, checkAuth);
+router.get("/check-auth", checkAuth);
 
 router.post("/signup", authLimiter, validate(signupSchema), signup);
 router.post("/login", authLimiter, validate(loginSchema), login);

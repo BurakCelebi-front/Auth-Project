@@ -1,6 +1,6 @@
 import axios, { isAxiosError } from "axios";
 
-import type { ApiResponse, ErrorResponse, UserResponse } from "../types/auth";
+import type { ApiResponse, ErrorResponse, SessionResponse, UserResponse } from "../types/auth";
 
 const http = axios.create({
 	baseURL: "/api/auth",
@@ -27,7 +27,7 @@ export const authApi = {
 	resendVerification: () => http.post<ApiResponse>("/resend-verification").then((r) => r.data),
 	deleteAccount: (password: string) =>
 		http.delete<ApiResponse>("/account", { data: { password } }).then((r) => r.data),
-	checkAuth: () => http.get<UserResponse>("/check-auth").then((r) => r.data),
+	checkAuth: () => http.get<SessionResponse>("/check-auth").then((r) => r.data),
 	forgotPassword: (email: string) => http.post<ApiResponse>("/forgot-password", { email }).then((r) => r.data),
 	resetPassword: (token: string, password: string) =>
 		http.post<ApiResponse>(`/reset-password/${encodeURIComponent(token)}`, { password }).then((r) => r.data),

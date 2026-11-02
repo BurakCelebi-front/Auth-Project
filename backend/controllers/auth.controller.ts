@@ -5,10 +5,10 @@ import { clientUrl } from "../config/env.js";
 import { trySendEmail } from "../mail/brevo.js";
 import { accountDeletedEmail, passwordResetEmail, passwordResetSuccessEmail, verificationEmail, welcomeEmail } from "../mail/templates.js";
 import { User, toPublicUser } from "../models/user.model.js";
-import type { ApiResponse, UserResponse } from "../types/api.js";
+import type { ApiResponse, SessionResponse, UserResponse } from "../types/api.js";
 import { AppError } from "../utils/AppError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { clearAuthCookie, setAuthCookie } from "../utils/authCookie.js";
+import { AUTH_COOKIE_NAME, clearAuthCookie, setAuthCookie, verifyAuthToken } from "../utils/authCookie.js";
 import {
 	MAX_VERIFICATION_ATTEMPTS,
 	RESET_TOKEN_TTL_MS,
@@ -176,12 +176,22 @@ export const resetPassword = asyncHandler<ResetTokenParams, ApiResponse, ResetPa
 	res.json({ success: true, message: "Password reset successful" });
 });
 
-export const checkAuth = asyncHandler<Params, UserResponse>(async (req, res) => {
-	const user = await User.findById(requireUserId(req.userId));
+export const checkAuth = asyncHandler<Params, SessionResponse>(async (req, res) => {
+	// A visitor without a session is a normal state, not an error: answer 200 with `user: null`
+	// so the browser does not log a failed request on every page load.
+	const token: unknown = req.cookies?.[AUTH_COOKIE_NAME];
+	if (typeof token !== "string" || token.length === 0) {
+		res.json({ success: true, user: null });
+		return;
+	}
+
+	const userId = verifyAuthToken(token);
+	const user = userId ? await User.findById(userId) : null;
 
 	if (!user) {
-		clearAuthCookie(res);
-		throw new AppError(401, "User not found");
+		clearAuthCookie(res); // invalid/expired token or deleted user
+		res.json({ success: true, user: null });
+		return;
 	}
 
 	res.json({ success: true, user: toPublicUser(user) });

@@ -18,6 +18,11 @@ export interface UserResponse extends ApiResponse {
 	user: User;
 }
 
+/** `user` is `null` when nobody is logged in. */
+export interface SessionResponse extends ApiResponse {
+	user: User | null;
+}
+
 export interface ErrorResponse extends ApiResponse {
 	success: false;
 	message: string;
